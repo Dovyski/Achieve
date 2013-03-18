@@ -35,7 +35,7 @@ package com.as3gamegears.achieve
 		}
 		
 		public function defineAchievement(theName :String, theRelatedProps :Array) :void {
-			mAchievements = new Achievement(theName, theRelatedProps);
+			mAchievements[theName] = new Achievement(theName, theRelatedProps);
 		}
 		
 		public function getValue(theProp :String) :int {
@@ -84,18 +84,19 @@ package com.as3gamegears.achieve
 			
 			for (var n :String in mAchievements) {
 				var aAchivement :Achievement = mAchievements[n];
-				
+
 				if (aAchivement.unlocked == false) {
 					var aActiveProps :int = 0;
 					
 					for (var p :int = 0; p < aAchivement.props.length; p++) {
-						if (mProps[aAchivement.props[p].name].isActive()) {
+						if (mProps[aAchivement.props[p]].isActive()) {
 							aActiveProps++;
 						}
 					}
-					
+
 					if (aActiveProps == aAchivement.props.length) {
 						aAchivement.unlocked = true;
+						aRet = aRet || new Vector.<Achievement>;
 						aRet.push(aAchivement);
 					}
 				}

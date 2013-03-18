@@ -41,8 +41,8 @@ package com.as3gamegears.achieve
 			var aRet :Boolean = false;
 			
 			switch(mActivation) {
-				case Achieve.ACTIVE_IF_GREATER_THAN: 	aRet = mValue > mDefinedValue;
-				case Achieve.ACTIVE_IF_LESS_THAN: 		aRet = mValue < mDefinedValue;
+				case Achieve.ACTIVE_IF_GREATER_THAN: 	aRet = mValue > mDefinedValue; break;
+				case Achieve.ACTIVE_IF_LESS_THAN: 		aRet = mValue < mDefinedValue; break;
 			}
 			
 			return aRet;

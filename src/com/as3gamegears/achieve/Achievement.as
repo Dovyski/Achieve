@@ -29,6 +29,10 @@ package com.as3gamegears.achieve
 			mUnlocked 	= false;
 		}
 		
+		public function toString() :String {
+			return "[Achivement " + mName + "]";
+		}
+		
 		public function set unlocked(v :Boolean) :void { mUnlocked = v; }
 		
 		public function get unlocked() 	:Boolean { return mUnlocked; }
