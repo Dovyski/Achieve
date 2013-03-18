@@ -21,9 +21,11 @@ package
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Vector3D;
 	import flash.text.TextField;
+	import flash.ui.Keyboard;
 
 	public class Game extends MovieClip
 	{
@@ -51,6 +53,7 @@ package
 			Game.instance.achieve	= new Achieve();
 			
 			stage.addEventListener(MouseEvent.CLICK, onClick);
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			
 			for (i = 0; i < 10; i++) {
 				boid = new Boid(Game.width / 2 * Math.random() * 0.8, Game.height / 2 * Math.random() * 0.8, 20 +  Math.random() * 20);
@@ -71,7 +74,7 @@ package
 			logs.text	= "Console\n-------------------------------\n";
 			addChild(logs);
 			
-			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5);
+			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5, ["partial"]);
 			Game.instance.achieve.defineProperty("deaths", Achieve.ACTIVE_IF_LESS_THAN, 2);
 			Game.instance.achieve.defineAchievement("killer", ["kills"]);
 			Game.instance.achieve.defineAchievement("last", ["deaths"]);
@@ -82,7 +85,13 @@ package
 			Game.instance.achieve.setValue("deaths", 1);
 			
 			logs.appendText("kills = " + Game.instance.achieve.getValue("kills") + "\n");
-			trace(Game.instance.achieve.checkAchievements());
+			trace("Partial check: " + Game.instance.achieve.checkAchievements(["partial"]));
+		}
+		
+		private function onKeyDown(e :KeyboardEvent) :void {
+			if (e.keyCode == Keyboard.C) {
+				trace("Complete CHECK: " + Game.instance.achieve.checkAchievements());
+			}
 		}
 		
 		public function update():void {

@@ -70,7 +70,7 @@ package com.as3gamegears.achieve
 			var aRet :Boolean = false;
 			
 			for (var i:int = 0; i < theTags.length; i++) {
-				if (theProp.tags.indexOf(theTags[i]) != -1) {
+				if (theProp.tags != null && theProp.tags.indexOf(theTags[i]) != -1) {
 					aRet = true;
 					break;
 				}
@@ -79,7 +79,7 @@ package com.as3gamegears.achieve
 			return aRet;
 		}
 		
-		public function checkAchievements() :Vector.<Achievement> {
+		public function checkAchievements(theTags :Array = null) :Vector.<Achievement> {
 			var aRet :Vector.<Achievement> = null;
 			
 			for (var n :String in mAchievements) {
@@ -89,13 +89,16 @@ package com.as3gamegears.achieve
 					var aActiveProps :int = 0;
 					
 					for (var p :int = 0; p < aAchivement.props.length; p++) {
-						if (mProps[aAchivement.props[p]].isActive()) {
+						var aProp :Property = mProps[aAchivement.props[p]];
+						
+						if ((theTags == null || hasTag(aProp, theTags)) && aProp.isActive()) {
 							aActiveProps++;
 						}
 					}
 
 					if (aActiveProps == aAchivement.props.length) {
 						aAchivement.unlocked = true;
+						
 						aRet = aRet || new Vector.<Achievement>;
 						aRet.push(aAchivement);
 					}
