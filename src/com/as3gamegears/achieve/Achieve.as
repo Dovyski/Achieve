@@ -18,36 +18,90 @@
 package com.as3gamegears.achieve 
 {	
 	public class Achieve 
-	{		
-		public function Achieve() {		
+	{
+		public static const ACTIVE_IF_GREATER_THAN	:String = ">";
+		public static const ACTIVE_IF_LESS_THAN		:String = "<";
+		
+		private var mProps 			:Object;
+		private var mAchievements 	:Object;
+		
+		public function Achieve() {
+			mProps 			= { };
+			mAchievements 	= { };
 		}
 		
-		public function defineProperty(theName :String, theConstraint :String, theValue :int) :void {
-			
+		public function defineProperty(theName :String, theTriggerMode :String, theValue :int, theTags :Array = null) :void {
+			mProps[theName] = new Property(theName, theTriggerMode, theValue, theTags);
 		}
 		
-		public function defineAchievement(theId :String, theRelatedProps :Array) :void {
-			
+		public function defineAchievement(theName :String, theRelatedProps :Array) :void {
+			mAchievements = new Achievement(theName, theRelatedProps);
 		}
 		
 		public function getValue(theProp :String) :int {
-			return 0;
+			if (mProps[theProp] == null) {
+				throw new ArgumentError("Unknown achievement property \""+theProp+"\".");
+			}
+			return mProps[theProp].value; // TODO: check for null
 		}
 		
 		public function addValue(theProp :String, theValue :int) :void {
-			
+			setValue(theProp, getValue(theProp) + theValue);
 		}
 		
-		public function setValue(theProp :String, theValue :int, theIgnoreConstraints :Boolean = false) :void {
-			
+		public function setValue(theProp :String, theValue :int) :void {
+			if (mProps[theProp] == null) {
+				throw new ArgumentError("Unknown achievement property \""+theProp+"\".");
+			}
+			mProps[theProp].value = theValue; // TODO: check for null
 		}
 		
 		public function resetProperties(theTags :Array = null) :void {
-			
+			for (var n :String in mProps) {
+				var aProp :Property = mProps[n];
+				
+				if(theTags == null || hasTag(aProp, theTags)) {
+					aProp.value = 0; // TODO: constraints?
+				}
+			}
 		}
 		
-		public function checkAchievements() :void {
+		private function hasTag(theProp :Property, theTags :Array) :Boolean {
+			var aRet :Boolean = false;
 			
+			for (var i:int = 0; i < theTags.length; i++) {
+				if (theProp.tags.indexOf(theTags[i]) != -1) {
+					aRet = true;
+					break;
+				}
+			}
+			
+			return aRet;
+		}
+		
+		public function checkAchievements() :Vector.<Achievement> {
+			var aRet :Vector.<Achievement> = null;
+			
+			for (var n :String in mAchievements) {
+				var aAchivement :Achievement = mAchievements[n];
+				
+				if (aAchivement.unlocked == false) {
+					var aActiveProps :int = 0;
+					
+					for (var p :int = 0; p < aAchivement.props.length; p++) {
+						if (mProps[aAchivement.props[p].name].isActive()) {
+							aActiveProps++;
+						}
+					}
+					
+					if (aActiveProps == aAchivement.props.length) {
+						aAchivement.unlocked = true;
+						aRet.push(aAchivement);
+					}
+				}
+			}
+			
+			return aRet;
 		}
 	}
 }

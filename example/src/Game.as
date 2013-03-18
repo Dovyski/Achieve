@@ -30,8 +30,9 @@ package
 		public static var mouse 		:Vector3D = new Vector3D(100, 100);
 		public static var width 		:Number = 0;
 		public static var height 		:Number = 0;
-		public static var showForces 	:Boolean = false;
-		public static var achieve	 	:Achieve = new Achieve();
+		
+		public var achieve	 	:Achieve;
+		public var logs	 		:TextField;
 		
 		public static var instance 		:Game;
 		
@@ -43,10 +44,13 @@ package
 		
 		private function init(e :Event) :void {
 			var i :int, boid :Boid;
+
+			Game.instance 			= this;
+			Game.width 				= stage.stageWidth;
+			Game.height 			= stage.stageHeight;
+			Game.instance.achieve	= new Achieve();
 			
-			Game.width 		= stage.stageWidth;
-			Game.height 	= stage.stageHeight;
-			Game.instance 	= this;
+			stage.addEventListener(MouseEvent.CLICK, onClick);
 			
 			for (i = 0; i < 10; i++) {
 				boid = new Boid(Game.width / 2 * Math.random() * 0.8, Game.height / 2 * Math.random() * 0.8, 20 +  Math.random() * 20);
@@ -56,6 +60,24 @@ package
 				
 				boid.reset();
 			}
+			
+			logs 					= new TextField();
+			logs.width 				= Game.width * 0.6; 
+			logs.height 			= Game.height * 0.3; 
+			logs.background 		= true;
+			logs.backgroundColor 	= 0x000000;
+			logs.textColor			= 0xffffff;
+			logs.alpha				= 0.7;
+			logs.text	= "Console\n-------------------------------\n";
+			addChild(logs);
+			
+			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5);
+			Game.instance.achieve.defineAchievement("killer", ["kills"]);
+		}
+		
+		private function onClick(e :MouseEvent) :void {
+			Game.instance.achieve.addValue("kills", 1);
+			logs.appendText("kills = " + Game.instance.achieve.getValue("kills") + "\n");
 		}
 		
 		public function update():void {
