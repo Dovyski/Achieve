@@ -35,25 +35,40 @@ package com.as3gamegears.achieve
 		}
 		
 		public function defineAchievement(theName :String, theRelatedProps :Array) :void {
+			checkPropertyExists(theRelatedProps);
 			mAchievements[theName] = new Achievement(theName, theRelatedProps);
 		}
 		
 		public function getValue(theProp :String) :int {
-			if (mProps[theProp] == null) {
-				throw new ArgumentError("Unknown achievement property \""+theProp+"\".");
-			}
-			return mProps[theProp].value; // TODO: check for null
+			checkPropertyExists(theProp);
+			return mProps[theProp].value;
 		}
 		
-		public function addValue(theProp :String, theValue :int) :void {
-			setValue(theProp, getValue(theProp) + theValue);
+		public function addValue(theProp :*, theValue :int) :void {
+			if(theProp is String) {
+				setValue(theProp, getValue(theProp) + theValue);
+				
+			} else if (theProp is Array) {
+				for (var i:int = 0; i < theProp.length; i++) {
+					setValue(theProp[i], getValue(theProp[i]) + theValue);
+				}
+			}
 		}
 		
-		public function setValue(theProp :String, theValue :int) :void {
-			if (mProps[theProp] == null) {
-				throw new ArgumentError("Unknown achievement property \""+theProp+"\".");
+		public function setValue(theProp :*, theValue :int) :void {
+			if (theProp is String) {
+				doSetValue(theProp, theValue);
+				
+			} else if (theProp is Array) {
+				for (var i:int = 0; i < theProp.length; i++) {
+					doSetValue(theProp[i], getValue(theProp[i]) + theValue);
+				}
 			}
-			mProps[theProp].value = theValue; // TODO: check for null
+		}
+		
+		private function doSetValue(theProp :String, theValue :int) :void {
+			checkPropertyExists(theProp);
+			mProps[theProp].value = theValue;
 		}
 		
 		public function resetProperties(theTags :Array = null) :void {
@@ -77,6 +92,27 @@ package com.as3gamegears.achieve
 			}
 			
 			return aRet;
+		}
+		
+		private function checkPropertyExists(theProp :*) :void {
+			var aProblematic :String = "";
+			
+			if (theProp is String) {
+				if (mProps[theProp] == null) {
+					aProblematic = theProp;
+				}
+				
+			} else if (theProp is Array) {
+				for (var i:int = 0; i < theProp.length; i++) {
+					if (mProps[theProp[i]] == null) {
+						aProblematic = theProp[i];
+					}
+				}
+			}
+			
+			if(aProblematic.length != 0) {
+				throw new ArgumentError("Unknown achievement property \"" + aProblematic + "\". Check if it was correctly defined by defineProperty().");
+			}
 		}
 		
 		public function checkAchievements(theTags :Array = null) :Vector.<Achievement> {

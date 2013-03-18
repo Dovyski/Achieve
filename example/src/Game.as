@@ -75,13 +75,16 @@ package
 			addChild(logs);
 			
 			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5, ["partial"]);
+			Game.instance.achieve.defineProperty("criticalDamages", Achieve.ACTIVE_IF_GREATER_THAN, 6, ["partial"]);
 			Game.instance.achieve.defineProperty("deaths", Achieve.ACTIVE_IF_LESS_THAN, 2);
+			
 			Game.instance.achieve.defineAchievement("killer", ["kills"]);
 			Game.instance.achieve.defineAchievement("last", ["deaths"]);
+			Game.instance.achieve.defineAchievement("hero", ["kills", "criticalDamages", "deaths"]);
 		}
 		
 		private function onClick(e :MouseEvent) :void {
-			Game.instance.achieve.addValue("kills", 1);
+			Game.instance.achieve.addValue(["kills", "criticalDamages"], 1);
 			Game.instance.achieve.setValue("deaths", 1);
 			
 			logs.appendText("kills = " + Game.instance.achieve.getValue("kills") + "\n");
