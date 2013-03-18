@@ -73,9 +73,9 @@ package
 			logs.alpha				= 0.7;
 			addChild(logs);
 			
-			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5, ["partial"]);
-			Game.instance.achieve.defineProperty("criticalDamages", Achieve.ACTIVE_IF_GREATER_THAN, 6, ["partial"]);
-			Game.instance.achieve.defineProperty("deaths", Achieve.ACTIVE_IF_LESS_THAN, 2);
+			Game.instance.achieve.defineProperty("kills", 0, Achieve.ACTIVE_IF_GREATER_THAN, 5, ["partial"]);
+			Game.instance.achieve.defineProperty("criticalDamages", 0, Achieve.ACTIVE_IF_GREATER_THAN, 6, ["partial"]);
+			Game.instance.achieve.defineProperty("deaths", 10, Achieve.ACTIVE_IF_LESS_THAN, 2);
 			
 			Game.instance.achieve.defineAchievement("killer", ["kills"]);
 			Game.instance.achieve.defineAchievement("last", ["deaths"]);
@@ -84,7 +84,7 @@ package
 		
 		private function onClick(e :MouseEvent) :void {
 			Game.instance.achieve.addValue(["kills", "criticalDamages"], 1);
-			Game.instance.achieve.setValue("deaths", 1);
+			Game.instance.achieve.addValue("deaths", -1);
 			
 			logs.text = "Props: " + Game.instance.achieve.dumpProperties() + "\n";
 			trace("Partial check: " + Game.instance.achieve.checkAchievements(["partial"]));
@@ -97,6 +97,7 @@ package
 			
 			if (e.keyCode == Keyboard.K) {
 				Game.instance.achieve.setValue("kills", 1);
+				Game.instance.achieve.setValue("deaths", 1);
 				logs.text = "OK Props: " + Game.instance.achieve.dumpProperties() + "\n";
 			}
 		}

@@ -23,29 +23,36 @@ package com.as3gamegears.achieve
 	 */
 	public class Property 
 	{
-		private var mName 			:String;
-		private var mValue 			:int;
-		private var mActivation 	:String;
-		private var mDefinedValue 	:int;
-		private var mTags			:Array;
+		private var mName 				:String;
+		private var mValue 				:int;
+		private var mActivation 		:String;
+		private var mActivationValue 	:int;
+		private var mInitialValue 		:int;
+		private var mTags				:Array;
 		
-		public function Property(theName :String, theActivation :String, theDefinedValue :int, theTags :Array) {
-			mName 			= theName;
-			mActivation 	= theActivation;
-			mDefinedValue 	= theDefinedValue;
-			mTags 			= theTags;
-			mValue			= 0;
+		public function Property(theName :String, theInitialValue :int, theActivation :String, theActivationValue :int, theTags :Array = null) {
+			mName 				= theName;
+			mActivation 		= theActivation;
+			mActivationValue 	= theActivationValue;
+			mInitialValue 		= theInitialValue;
+			mTags 				= theTags;
+			
+			reset();
 		}
 		
 		public function isActive() :Boolean {
 			var aRet :Boolean = false;
 			
 			switch(mActivation) {
-				case Achieve.ACTIVE_IF_GREATER_THAN: 	aRet = mValue > mDefinedValue; break;
-				case Achieve.ACTIVE_IF_LESS_THAN: 		aRet = mValue < mDefinedValue; break;
+				case Achieve.ACTIVE_IF_GREATER_THAN: 	aRet = mValue > mActivationValue; break;
+				case Achieve.ACTIVE_IF_LESS_THAN: 		aRet = mValue < mActivationValue; break;
 			}
 			
 			return aRet;
+		}
+		
+		public function reset() :void {
+			mValue = mInitialValue;
 		}
 		
 		public function set value(v :int) 	:void 	{ mValue = v; }

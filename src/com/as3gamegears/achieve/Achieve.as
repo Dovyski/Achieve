@@ -30,8 +30,8 @@ package com.as3gamegears.achieve
 			mAchievements 	= { };
 		}
 		
-		public function defineProperty(theName :String, theTriggerMode :String, theValue :int, theTags :Array = null) :void {
-			mProps[theName] = new Property(theName, theTriggerMode, theValue, theTags);
+		public function defineProperty(theName :String, theInitialValue :int, theaActivationMode :String, theValue :int, theTags :Array = null) :void {
+			mProps[theName] = new Property(theName, theInitialValue, theaActivationMode, theValue, theTags);
 		}
 		
 		public function defineAchievement(theName :String, theRelatedProps :Array) :void {
@@ -84,7 +84,7 @@ package com.as3gamegears.achieve
 				var aProp :Property = mProps[n];
 				
 				if(theTags == null || hasTag(aProp, theTags)) {
-					aProp.value = 0; // TODO: constraints?
+					aProp.reset();
 				}
 			}
 		}
