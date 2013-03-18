@@ -55,19 +55,27 @@ package com.as3gamegears.achieve
 			}
 		}
 		
-		public function setValue(theProp :*, theValue :int) :void {
+		public function setValue(theProp :*, theValue :int, theIgnoreActivationContraint :Boolean = false) :void {
 			if (theProp is String) {
-				doSetValue(theProp, theValue);
+				doSetValue(theProp, theValue, theIgnoreActivationContraint);
 				
 			} else if (theProp is Array) {
 				for (var i:int = 0; i < theProp.length; i++) {
-					doSetValue(theProp[i], getValue(theProp[i]) + theValue);
+					doSetValue(theProp[i], getValue(theProp[i]) + theValue, theIgnoreActivationContraint);
 				}
 			}
 		}
 		
-		private function doSetValue(theProp :String, theValue :int) :void {
+		private function doSetValue(theProp :String, theValue :int, theIgnoreActivationContraint :Boolean = false) :void {
 			checkPropertyExists(theProp);
+			
+			if(!theIgnoreActivationContraint) {
+				switch(mProps[theProp].activation) {			
+					case Achieve.ACTIVE_IF_GREATER_THAN: 	theValue = theValue > mProps[theProp].value ? theValue : mProps[theProp].value; break;
+					case Achieve.ACTIVE_IF_LESS_THAN: 		theValue = theValue < mProps[theProp].value ? theValue : mProps[theProp].value; break;
+				}
+			}
+			
 			mProps[theProp].value = theValue;
 		}
 		
@@ -142,6 +150,16 @@ package com.as3gamegears.achieve
 			}
 			
 			return aRet;
+		}
+		
+		public function dumpProperties() :String {
+			var aRet :String = "";
+			
+			for (var i :String in mProps) {
+				aRet += i + "=" + mProps[i].value + ", ";
+			}
+			
+			return aRet.substr(0, aRet.length - 2);
 		}
 	}
 }

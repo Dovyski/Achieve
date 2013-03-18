@@ -71,7 +71,6 @@ package
 			logs.backgroundColor 	= 0x000000;
 			logs.textColor			= 0xffffff;
 			logs.alpha				= 0.7;
-			logs.text	= "Console\n-------------------------------\n";
 			addChild(logs);
 			
 			Game.instance.achieve.defineProperty("kills", Achieve.ACTIVE_IF_GREATER_THAN, 5, ["partial"]);
@@ -87,13 +86,18 @@ package
 			Game.instance.achieve.addValue(["kills", "criticalDamages"], 1);
 			Game.instance.achieve.setValue("deaths", 1);
 			
-			logs.appendText("kills = " + Game.instance.achieve.getValue("kills") + "\n");
+			logs.text = "Props: " + Game.instance.achieve.dumpProperties() + "\n";
 			trace("Partial check: " + Game.instance.achieve.checkAchievements(["partial"]));
 		}
 		
 		private function onKeyDown(e :KeyboardEvent) :void {
 			if (e.keyCode == Keyboard.C) {
 				trace("Complete CHECK: " + Game.instance.achieve.checkAchievements());
+			}
+			
+			if (e.keyCode == Keyboard.K) {
+				Game.instance.achieve.setValue("kills", 1);
+				logs.text = "OK Props: " + Game.instance.achieve.dumpProperties() + "\n";
 			}
 		}
 		
