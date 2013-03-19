@@ -18,6 +18,7 @@
 package  
 {
 	import com.as3gamegears.achieve.Achieve;
+	import com.as3gamegears.achieve.Achievement;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -32,13 +33,12 @@ package
 		public static var mouse 		:Vector3D = new Vector3D(100, 100);
 		public static var width 		:Number = 0;
 		public static var height 		:Number = 0;
+		public static var instance 		:Game;
 		
 		public var achieve	 	:Achieve;
 		public var logs	 		:TextField;
-		
-		public static var instance 		:Game;
-		
-		public var boids :Vector.<Boid> = new Vector.<Boid>;
+		public var hud	 		:MovieClip;
+		public var boids 		:Vector.<Boid> = new Vector.<Boid>;
 		
 		public function Game() {
 			addEventListener(Event.ADDED_TO_STAGE, init);
@@ -64,6 +64,9 @@ package
 				boid.reset();
 			}
 			
+			hud = new MovieClip();
+			addChild(hud);
+			
 			logs 					= new TextField();
 			logs.width 				= Game.width * 0.6; 
 			logs.height 			= Game.height * 0.3; 
@@ -82,17 +85,26 @@ package
 			Game.instance.achieve.defineAchievement("hero", ["kills", "criticalDamages", "deaths"]);
 		}
 		
+		private function updateHudAchivements(theNewAchievements :Vector.<Achievement>) :void {
+			if (theNewAchievements != null) {
+				for (var i:int = 0; i < theNewAchievements.length; i++) {
+					var a :Achievement = theNewAchievements[i];
+					hud.addChild(new UnlockedSign(370, 400 - hud.numChildren * (UnlockedSign.HEIGHT + 10), a.name));
+				}
+			}
+		}
+		
 		private function onClick(e :MouseEvent) :void {
 			Game.instance.achieve.addValue(["kills", "criticalDamages"], 1);
 			Game.instance.achieve.addValue("deaths", -1);
 			
 			logs.text = "Props: " + Game.instance.achieve.dumpProperties() + "\n";
-			trace("Partial check: " + Game.instance.achieve.checkAchievements(["partial"]));
+			updateHudAchivements(Game.instance.achieve.checkAchievements(["partial"]));
 		}
 		
 		private function onKeyDown(e :KeyboardEvent) :void {
 			if (e.keyCode == Keyboard.C) {
-				trace("Complete CHECK: " + Game.instance.achieve.checkAchievements());
+				updateHudAchivements(Game.instance.achieve.checkAchievements());
 			}
 			
 			if (e.keyCode == Keyboard.K) {
